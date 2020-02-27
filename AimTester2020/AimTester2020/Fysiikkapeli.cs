@@ -10,11 +10,12 @@ public class AimTester2020 : PhysicsGame
 
     GameObject kursori;
     GameObject vihu;
+    //Timer ajastin;
     public override void Begin()
     {
         LuoKursori();
-        NopeutaErää();
         AsetaOhjaimet();
+        NopeutaEraa();
 
         SetWindowSize(1024, 768, false);
 
@@ -35,6 +36,12 @@ public class AimTester2020 : PhysicsGame
     }
 
 
+    void LiikutaKursoria()
+    {
+        kursori.Position = Mouse.PositionOnWorld;
+    }
+
+
     public void LuoVihu()
     {
         vihu = new GameObject(50, 50);
@@ -46,57 +53,36 @@ public class AimTester2020 : PhysicsGame
     }
 
 
-    /*public static void EränNopeus()
+    public void NopeutaEraa()
     {
-        double[] erä = new double[10];
-        erä[0] = 2;
-        erä[1] = 1.5;
-        erä[2] = 1.25;
-        erä[3] = 1.1;
-        erä[4] = 1.0;
-        erä[5] = 0.9;
-        erä[6] = 0.8;
-        erä[7] = 0.7;
-        erä[8] = 0.6;
-        erä[9] = 0.5;
-    }*/
-
-    public void NopeutaErää()
-    {
-        for (double i = 5; i > 0.1; i -= 0.2)
+        double[] era = { 2.0, 6.0, 5.0, 4.0, 3.0, 2.5, 2.0, 1.5, 1.2, 1.0 };
+        for (int i = 0; i < era.Length; i++)
         {
-            Timer ajastin = new Timer();
-            ajastin.Interval = i;
+            /*ajastin = new Timer();
+            ajastin.Interval = era[i];
             ajastin.Timeout += LuoVihu;
             ajastin.Start();
-            /*for (int u = 0; 10 > u; u++)
-            {
-
-            }*/
+            ajastin.Reset();*/
+            Timer.CreateAndStart(era[i], LuoVihu);
         }
     }
+
+
     void AsetaOhjaimet()
     {
 
-        //Mouse.Listen(MouseButton.Left, ButtonState.Pressed, Tuhoa, "Tuhoaa olion");
+        Mouse.Listen(MouseButton.Left, ButtonState.Pressed, Tuhoa, "Tuhoaa olion");
 
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
 
 
-    void LiikutaKursoria()
+    void Tuhoa()
     {
-        kursori.Position = Mouse.PositionOnWorld;
-    }
-    /*void Tuhoa()
-    {
-        if (kursori.Position == vihu.Position) ;
-
-                // ympyröille
-        if (Vector.Distance(a.Position, b.Position) < a.Width + b.Width)
+        if (Vector.Distance(kursori.Position, vihu.Position) < vihu.Width / 2)
             // on päällekkäistä aluetta
             {
             vihu.Destroy();
             }
-    }*/
+    }
 }
