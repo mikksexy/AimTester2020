@@ -18,8 +18,8 @@ public class AimTester2020 : PhysicsGame
     GameObject vihu;
     Timer vihuAjastin;
     IntMeter eraNumero;
-    int tuhottuja; // Tuhottujen vihujen määrä
-    int vihuMaara;
+    IntMeter tuhottuja; // Tuhottujen vihujen määrä
+    IntMeter vihuMaara;
     const int pelinLeveys = 800;
     const int pelinKorkeus = 600;
     public override void Begin()
@@ -35,7 +35,7 @@ public class AimTester2020 : PhysicsGame
         alkuValikko.AddItemHandler(0, AloitaPeli);
         alkuValikko.AddItemHandler(1, ConfirmExit);
 
-
+        vihuMaara = new IntMeter(0);
 
     }
 
@@ -47,17 +47,17 @@ public class AimTester2020 : PhysicsGame
         while (vihuMaara != 0)
         {
             vihu.Destroy();
-            vihuMaara -= 1;
+            vihuMaara.Value -= 1;
         }
-        tuhottuja = 0;
-        vihuMaara = 0;
+
         LuoKursori();
 
         LuoEraLaskuri();
 
         vihuAjastin = new Timer();
-        Era();
+        tuhottuja = new IntMeter(0);
         vihuAjastin.Timeout += LuoVihu;
+        Era();
         //vihuAjastin.Start();
 
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
@@ -84,8 +84,8 @@ public class AimTester2020 : PhysicsGame
             if (Vector.Distance(kursori.Position, vihu.Position) < vihu.Width / 2) // Jos kursori ja vihu ovat päällekkäin
             {
                 vihu.Destroy();
-                tuhottuja += 1;
-                vihuMaara -= 1;
+                tuhottuja.Value += 1;
+                vihuMaara.Value -= 1;
                 Era(); // Kutsuu ohjelmaa, jotta voidaan tarkistaa tarvitseeko vihuja spawnata nopeampaa
             }
         }, "Hiiren vasenta painettaessa tuhoaa olion, jos ehto täyttyy");
@@ -124,7 +124,7 @@ public class AimTester2020 : PhysicsGame
         vihu.X = RandomGen.NextDouble(-pelinLeveys / 2, pelinLeveys / 2);
         vihu.Y = RandomGen.NextDouble(-pelinKorkeus / 2, pelinKorkeus / 2);
         Add(vihu);
-        vihuMaara += 1;
+        vihuMaara.Value += 1;
     }
 
     /// <summary>
@@ -157,13 +157,13 @@ public class AimTester2020 : PhysicsGame
     {
         vihuAjastin.Stop(); // Pysäyttää vihujen spawnaamisen
         vihu.Destroy();
-        //vihuMaara -= 1;
+        vihuMaara.Value -= 1;
         kursori.Destroy();
-        tuhottuja = 0;
+        tuhottuja.Reset();
         eraNumero.Reset();
         //eraNumero.Stop();
         Add(valikko);
-        valikko.AddItemHandler(0, Begin);
+        valikko.AddItemHandler(0, AloitaPeli);
         valikko.AddItemHandler(1, Exit);
     }
 }
