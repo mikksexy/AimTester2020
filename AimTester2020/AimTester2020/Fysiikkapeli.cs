@@ -14,21 +14,19 @@ using Jypeli.Widgets;
 public class AimTester2020 : PhysicsGame
 {
 
-    GameObject kursori;
-    GameObject vihu;
-    Timer vihuAjastin;
-    IntMeter eraNumero;
-    IntMeter tuhottuja; // Tuhottujen vihujen määrä
-    IntMeter vihuMaara;
-    const int pelinLeveys = 800;
-    const int pelinKorkeus = 600;
+    private GameObject kursori;
+    private GameObject vihu;
+    private Timer vihuAjastin;
+    private IntMeter eraNumero;
+    private IntMeter tuhottuja; // Tuhottujen vihujen määrä
+    private IntMeter vihuMaara;
+    private const int pelinLeveys = 800;
+    private const int pelinKorkeus = 600;
     public override void Begin()
     {
         SetWindowSize(pelinLeveys, pelinKorkeus, false);
 
         Level.Background.Color = Color.Black;
-
-        Camera.ZoomToLevel();
 
         MultiSelectWindow alkuValikko = new MultiSelectWindow("AimTester2020", "Aloita peli", "Lopeta");
         Add(alkuValikko);
@@ -44,6 +42,7 @@ public class AimTester2020 : PhysicsGame
     /// </summary>
     public void AloitaPeli()
     {
+        Camera.ZoomToLevel();
         while (vihuMaara != 0)
         {
             vihu.Destroy();
@@ -52,13 +51,12 @@ public class AimTester2020 : PhysicsGame
 
         LuoKursori();
 
-        LuoEraLaskuri();
+        LuoEralaskuri();
 
         vihuAjastin = new Timer();
         tuhottuja = new IntMeter(0);
         vihuAjastin.Timeout += LuoVihu;
         Era();
-        //vihuAjastin.Start();
 
         Keyboard.Listen(Key.Escape, ButtonState.Pressed, ConfirmExit, "Lopeta peli");
     }
@@ -77,7 +75,7 @@ public class AimTester2020 : PhysicsGame
         {
             kursori.Position = Mouse.PositionOnWorld;
         }, "Hiiren liike liikuttaa kursoria");
-        kursori.Position = Mouse.PositionOnScreen;
+        //kursori.Position = Mouse.PositionOnScreen;
 
         Mouse.Listen(MouseButton.Left, ButtonState.Pressed, delegate ()
         {
@@ -91,8 +89,10 @@ public class AimTester2020 : PhysicsGame
         }, "Hiiren vasenta painettaessa tuhoaa olion, jos ehto täyttyy");
     }
 
-
-    public void LuoEraLaskuri()
+    /// <summary>
+    /// Luo eriä laskevan laskurin
+    /// </summary>
+    public void LuoEralaskuri()
     {
         eraNumero = new IntMeter(0);
 
@@ -161,7 +161,7 @@ public class AimTester2020 : PhysicsGame
         kursori.Destroy();
         tuhottuja.Reset();
         eraNumero.Reset();
-        //eraNumero.Stop();
+        ClearAll();
         Add(valikko);
         valikko.AddItemHandler(0, AloitaPeli);
         valikko.AddItemHandler(1, Exit);
