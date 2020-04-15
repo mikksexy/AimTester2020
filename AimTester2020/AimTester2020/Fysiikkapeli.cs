@@ -11,7 +11,6 @@ using Jypeli.Widgets;
 /// <summary>
 /// Peli, jossa vihuja (palloja) tuhotaan klikkailemalla kursorilla niiden päältä mahdollisimman nopeasti.
 /// </summary>
-/// TODO: funktio + silmukka, ks: https://tim.jyu.fi/view/kurssit/tie/ohj1/2020k/demot/demo9-tutkimus?answerNumber=3&b=qNc4xpHaic24&size=1&task=D9T1&user=mikksexy
 public class AimTester2020 : PhysicsGame
 {
     private GameObject kursori;
@@ -20,6 +19,8 @@ public class AimTester2020 : PhysicsGame
     private IntMeter eraNumero;
     private IntMeter tuhottuja; // Tuhottujen vihujen määrä
     private IntMeter vihuMaara;
+    private Timer reaktioAika;
+    List<double> reaktio;
 
     private const int PELIN_LEVEYS = 800;
     private const int PELIN_KORKEUS = 600;
@@ -61,7 +62,7 @@ public class AimTester2020 : PhysicsGame
 
             case 3:
                 ClearAll();
-                MultiSelectWindow lopetusValikko = new MultiSelectWindow("ONNITTELUT!\nLäpäisit kohdistamistestin", "Pelaa uudestaan", "Lopeta");
+                MultiSelectWindow lopetusValikko = new MultiSelectWindow("ONNITTELUT!\nLäpäisit kohdistamistestin\nReaktioaikojesi keskiarvo oli " + Keskiarvo(reaktio) + " sekuntia", "Pelaa uudestaan", "Lopeta");
                 Add(lopetusValikko);
                 lopetusValikko.AddItemHandler(0, AloitaPeli);
                 lopetusValikko.AddItemHandler(1, Exit);
@@ -80,6 +81,7 @@ public class AimTester2020 : PhysicsGame
         Camera.ZoomToLevel();
 
         vihuMaara = new IntMeter(0);
+        reaktio = new List<double>();
 
         LuoKursori();
 
@@ -114,6 +116,7 @@ public class AimTester2020 : PhysicsGame
             if (Vector.Distance(kursori.Position, vihu.Position) < vihu.Width / 2) // Jos kursori ja vihu ovat päällekkäin
             {
                 vihu.Destroy();
+                reaktio.Add(reaktioAika.SecondCounter);
                 tuhottuja.Value += 1;
                 vihuMaara.Value -= 1;
                 Era(); // Kutsuu ohjelmaa, jotta voidaan tarkistaa tarvitseeko vihuja spawnata nopeampaa
@@ -150,12 +153,15 @@ public class AimTester2020 : PhysicsGame
         {
             Valikot(2);
         }
+        reaktioAika = new Timer();
+        reaktioAika.Reset();
         vihu = new GameObject(50, 50);
         vihu.Shape = Shape.Circle;
         vihu.Color = Color.Yellow;
         vihu.X = RandomGen.NextDouble(-PELIN_LEVEYS / 2, PELIN_LEVEYS / 2);
         vihu.Y = RandomGen.NextDouble(-PELIN_KORKEUS / 2, PELIN_KORKEUS / 2);
         Add(vihu);
+        reaktioAika.Start();
         vihuMaara.Value += 1;
     }
 
@@ -177,5 +183,21 @@ public class AimTester2020 : PhysicsGame
         {
             Valikot(3);
         }
+    }
+
+
+    /// <summary>
+    /// Funktio laskee listan arvojen keskiarvon ja palauttaa sen kolmen desimaalin tarkkuudella.
+    /// </summary>
+    /// <param name="lista">Tässä tapauksessa lista reaktioajoista</param>
+    /// <returns>keskiarvon kolmen desimaalin tarkkuudella</returns>
+    private double Keskiarvo(List<double> lista)
+    {
+        double keskiarvo = 0;
+        foreach (double n in lista)
+        {
+            keskiarvo += n;
+        }
+        return Math.Round(keskiarvo / lista.Count, 3);
     }
 }
