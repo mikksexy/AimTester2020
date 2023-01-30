@@ -1,8 +1,5 @@
-# Pohja Ohjelmointi 1 -kurssin harjoitustöiden GIT-repoille.
+# Ohjelmointi 1 -kurssin harjoitustyö
 
-Tämä on pohja Ohjelmointi 1 -kurssin harjoitustöiden Git-repoille. 
-Opiskelija forkkaa 
-tämän repon omaa harjoitustyötään varten. `fork`-toiminto löytyy sivun yläreunasta.
+AimTester2020 -pelissä klikkaillaan näytölle ilmestyviä palloja. =)
 
-Lue Git-versiohallinnan tarkemmat käyttöohjeet TIMistä: <https://tim.jyu.fi/view/kurssit/tie/ohj1/harjoitustyo/git>
-
+Tekijä: Sami Mikkola
